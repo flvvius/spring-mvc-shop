@@ -5,40 +5,28 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "comenzi")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
+@Builder
 public class Comanda {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private Client client;
-
-    @NotNull
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produs_id")
-    private List<Produs> produse;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private Stare stare;
 
-    @Column(name = "data_plasare")
-    private Date dataPlasare;
-
-    @Column(name = "data_ultima_actualizare")
-    private Date dataUltimaActualizare;
+    private LocalDate dataPlasarii;
 
 }
