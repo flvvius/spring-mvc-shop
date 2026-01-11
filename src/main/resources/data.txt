@@ -1,0 +1,5 @@
+Ion Popescu,ion@test.com,PLASATA
+Maria Ionescu,maria@test.com,EXPEDIATA
+Andrei Radu,andrei@test.com,LIVRATA
+Elena Dobre,elena@test.com,ANULATA
+George Vasile,george@test.com,PROCESATA
