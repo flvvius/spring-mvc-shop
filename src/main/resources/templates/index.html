@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Magazin Comenzi</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .btn-anulare {
+            color: white;
+            background-color: red;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .btn-update {
+            color: white;
+            background-color: green;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .status-anulata {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Gestionare Comenzi</h1>
+
+<form action="/home" method="get" style="margin-bottom: 20px; border: 1px solid #ccc; padding: 10px;">
+    <label>Filtrează după stare:</label>
+    <select name="stareFiltru">
+        <option value="">-- Toate --</option>
+        <option th:each="s : ${toateStarile}"
+                th:value="${s}"
+                th:text="${s}"
+                th:selected="${s == stareSelectata}"></option>
+    </select>
+    <button type="submit">Filtrează</button>
+    <a href="/home">
+        <button type="button">Resetează</button>
+    </a>
+</form>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Client</th>
+        <th>Email</th>
+        <th>Data</th>
+        <th>Stare</th>
+        <th>Acțiuni (Admin)</th>
+        <th>Anulare</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="comanda : ${listaComenzi}">
+        <td th:text="${comanda.id}">1</td>
+        <td th:text="${comanda.numeClient}">Nume</td>
+        <td th:text="${comanda.emailClient}">Email</td>
+        <td th:text="${comanda.dataPlasarii}">Data</td>
+        <td th:text="${comanda.stare}"
+            th:class="${comanda.stare == 'ANULATA' ? 'status-anulata' : ''}">PLASATA
+        </td>
+
+        <td>
+            <form th:action="@{/home/schimba-stare/{id}(id=${comanda.id})}" method="post">
+                <select name="stareNoua">
+                    <option th:each="s : ${toateStarile}"
+                            th:value="${s}"
+                            th:text="${s}"
+                            th:selected="${s.name() == comanda.stare}"></option>
+                </select>
+                <button type="submit" class="btn-update">Update</button>
+            </form>
+        </td>
+
+        <td>
+            <form th:if="${comanda.stare == 'PLASATA'}"
+                  th:action="@{/home/anuleaza/{id}(id=${comanda.id})}"
+                  method="post">
+                <button type="submit" class="btn-anulare">X Anulează</button>
+            </form>
+            <span th:unless="${comanda.stare == 'PLASATA'}">-</span>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
