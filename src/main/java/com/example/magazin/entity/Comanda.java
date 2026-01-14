@@ -1,6 +1,8 @@
 package com.example.magazin.entity;
 
 import com.example.magazin.entity.enums.Stare;
+import com.example.magazin.pattern.StateComanda;
+import com.example.magazin.pattern.StateFactory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -28,5 +30,15 @@ public class Comanda {
     private Stare stare;
 
     private LocalDate dataPlasarii;
+
+    public void avanseazaStare() {
+        StateComanda stateObject = StateFactory.getStare(this.stare);
+        stateObject.avanseaza(this);
+    }
+
+    public void anuleazaComanda() {
+        StateComanda stateObject = StateFactory.getStare(this.stare);
+        stateObject.anuleaza(this);
+    }
 
 }

@@ -29,18 +29,12 @@ public class ComandaService {
         return comenzi.stream().map(comandaMapper::toDto).toList();
     }
 
-    public void modificaStare(Long id, Stare stareNoua) {
-
-        if (stareNoua == Stare.LIVRATA) {
-            throw new RuntimeException("Comanda este deja livrata! Starea nu se poate actualiza!");
-        }
+    public void modificaStare(Long id) {
 
         Comanda comanda = comandaRepository.findById(id).orElseThrow(() -> new RuntimeException("Comanda nu exista!"));
 
-        comanda.setStare(stareNoua);
-
+        comanda.avanseazaStare();
         comandaRepository.save(comanda);
-
         trimiteNotificare(comanda);
 
     }
@@ -48,12 +42,12 @@ public class ComandaService {
     public void anuleazaComanda(Long id) {
         Comanda comanda = comandaRepository.findById(id).orElseThrow(() -> new RuntimeException("Comanda nu exista!"));
 
-        if (comanda.getStare() == Stare.PLASATA) {
-            comanda.setStare(Stare.ANULATA);
+        try {
+            comanda.anuleazaComanda();
             comandaRepository.save(comanda);
             trimiteNotificare(comanda);
-        } else {
-            System.out.println("Nu se poate anula comanda " + id + " deoarece aceasta este deja " + comanda.getStare());
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
     }
 

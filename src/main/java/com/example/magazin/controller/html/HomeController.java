@@ -34,8 +34,8 @@ public class HomeController {
     }
 
     @PostMapping("/schimba-stare/{id}")
-    public String schimbaStare(@PathVariable Long id, @RequestParam Stare stareNoua) {
-        comandaService.modificaStare(id, stareNoua);
+    public String schimbaStare(@PathVariable Long id) {
+        comandaService.modificaStare(id);
         return "redirect:/home";
     }
 
