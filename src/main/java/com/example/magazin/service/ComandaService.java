@@ -3,9 +3,11 @@ package com.example.magazin.service;
 import com.example.magazin.dto.ComandaDto;
 import com.example.magazin.entity.Comanda;
 import com.example.magazin.entity.enums.Stare;
+import com.example.magazin.event.StareSchimbataEvent;
 import com.example.magazin.mapper.ComandaMapper;
 import com.example.magazin.repository.ComandaRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,7 @@ public class ComandaService {
 
     private final ComandaRepository comandaRepository;
     private final ComandaMapper comandaMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
     public List<ComandaDto> getToateComenzile(Stare filtruStare) {
         List<Comanda> comenzi;
@@ -35,7 +38,7 @@ public class ComandaService {
 
         comanda.avanseazaStare();
         comandaRepository.save(comanda);
-        trimiteNotificare(comanda);
+        eventPublisher.publishEvent(new StareSchimbataEvent(comanda));
 
     }
 
@@ -45,15 +48,10 @@ public class ComandaService {
         try {
             comanda.anuleazaComanda();
             comandaRepository.save(comanda);
-            trimiteNotificare(comanda);
+            eventPublisher.publishEvent(new StareSchimbataEvent(comanda));
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-    }
-
-    private void trimiteNotificare(Comanda c) {
-        System.out.println(">>> NOTIFICARE EMAIL catre " + c.getClient().getEmail() +
-                ": Comanda dvs. #" + c.getId() + " are acum starea: " + c.getStare());
     }
 
 }
